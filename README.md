@@ -10,6 +10,15 @@
 
 See the [API documentation](https://godoc.org/github.com/mandykoh/autocrop) for more details.
 
+Some examples of cropping decisions made by `autocrop`:
+
+![Example of textured background being cropped from around a pink square](screenshots/crop-example-1.png)
+
+![Example of space being cropped away around a character illustration](screenshots/crop-example-2.png)
+
+![Example of sky being cropped away around a bridge](screenshots/crop-example-3.png)
+
+
 This software is made available under an [MIT license](LICENSE).
 
 
@@ -28,13 +37,6 @@ The [`ToThreshold`](https://godoc.org/github.com/mandykoh/autocrop#ToThreshold) 
 ```go
 croppedImg := autocrop.ToThreshold(img, energyThreshold)
 ```
-
-![Example of textured background being cropped from around a pink square](screenshots/crop-example-1.png)
-
-![Example of space being cropped away around a character illustration](screenshots/crop-example-2.png)
-
-![Example of sky being cropped away around a bridge](screenshots/crop-example-3.png)
-
 
 ## Command line tool
 
