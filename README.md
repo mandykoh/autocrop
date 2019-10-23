@@ -6,7 +6,7 @@
 
 `autocrop` is an automatic image cropping implementation in Go.
 
-`autocrop` uses an energy-based approach to determine regions of visual interest at which to stop cropping.
+`autocrop` uses an energy-based approach to determine regions of visual interest at which to stop cropping. Cropping is alpha channel aware and supports images with translucency.
 
 See the [API documentation](https://godoc.org/github.com/mandykoh/autocrop) for more details.
 
