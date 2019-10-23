@@ -24,7 +24,7 @@ This software is made available under an [MIT license](LICENSE).
 
 ## Example usage
 
-Get the autocropped bounds of an image using [`BoundsForThreshold`]((https://godoc.org/github.com/mandykoh/autocrop#BoundsForThreshold)):
+Get the autocropped bounds of an image using [`BoundsForThreshold`](https://godoc.org/github.com/mandykoh/autocrop#BoundsForThreshold):
 
 ```go
 croppedBounds := autocrop.BoundsForThreshold(img, energyThreshold)
