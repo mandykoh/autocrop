@@ -12,13 +12,16 @@ See the [API documentation](https://godoc.org/github.com/mandykoh/autocrop) for 
 
 Some examples of cropping decisions made by `autocrop` can be seen here.
 
-_Threshold: 0.01_
+_Threshold 0.01_
+
 ![Example of textured background being cropped from around a pink square](screenshots/crop-example-1.png)
 
-_Threshold: 0.01_
+_Threshold 0.01_
+
 ![Example of space being cropped away around a character illustration](screenshots/crop-example-2.png)
 
-_Threshold: 0.015_
+_Threshold 0.015_
+
 ![Example of sky being cropped away around a bridge](screenshots/crop-example-3.png)
 
 
