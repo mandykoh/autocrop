@@ -10,7 +10,7 @@
 
 See the [API documentation](https://godoc.org/github.com/mandykoh/autocrop) for more details.
 
-Some examples of cropping decisions made by `autocrop` can be seen here.
+Some examples of cropping decisions made by `autocrop` can be seen here:
 
 _Threshold 0.01_
 
