@@ -4,7 +4,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/mandykoh/autocrop)](https://goreportcard.com/report/github.com/mandykoh/autocrop)
 [![Build Status](https://travis-ci.org/mandykoh/autocrop.svg?branch=master)](https://travis-ci.org/mandykoh/autocrop)
 
-`autocrop` is an automatic image cropping implementation in Go.
+`autocrop` is an automatic image cropping/region-of-interest finding implementation in Go.
 
 `autocrop` uses an energy-based approach to determine regions of visual interest at which to stop cropping. Cropping is alpha channel aware and supports images with translucency.
 
@@ -30,7 +30,7 @@ This software is made available under an [MIT license](LICENSE).
 
 ## Example usage
 
-Get the autocropped bounds of an image using [`BoundsForThreshold`](https://godoc.org/github.com/mandykoh/autocrop#BoundsForThreshold):
+Find the autocropped bounds of an image using [`BoundsForThreshold`](https://godoc.org/github.com/mandykoh/autocrop#BoundsForThreshold):
 
 ```go
 croppedBounds := autocrop.BoundsForThreshold(img, energyThreshold)
