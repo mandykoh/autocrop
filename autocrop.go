@@ -1,7 +1,6 @@
 package autocrop
 
 import (
-	"fmt"
 	"image"
 	"image/draw"
 	"math"
