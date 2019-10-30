@@ -86,7 +86,7 @@ func TestBoundsForThreshold(t *testing.T) {
 
 		lastBounds := img.Bounds()
 
-		thresholds := []float32{0.1, 0.2, 0.3, 0.99, 1.0}
+		thresholds := []float32{0.005, 0.006, 0.007, 0.008, 0.01}
 
 		for i := range thresholds {
 			result := BoundsForThreshold(img, thresholds[i])
@@ -130,8 +130,8 @@ func TestToThreshold(t *testing.T) {
 
 		result := ToThreshold(img, 0.01)
 
-		expectedResult := image.NewNRGBA(image.Rect(0, 0, 469, 555))
-		draw.Draw(expectedResult, expectedResult.Bounds(), img, image.Pt(img.Bounds().Min.X+10, img.Bounds().Min.Y+69), draw.Src)
+		expectedResult := image.NewNRGBA(image.Rect(0, 0, 464, 555))
+		draw.Draw(expectedResult, expectedResult.Bounds(), img, image.Pt(img.Bounds().Min.X+15, img.Bounds().Min.Y+69), draw.Src)
 
 		if expected, actual := expectedResult.Bounds().Dx(), result.Bounds().Dx(); expected != actual {
 			t.Errorf("Expected cropped result to be %d pixels wide but was %d", expected, actual)

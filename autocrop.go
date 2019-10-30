@@ -1,6 +1,7 @@
 package autocrop
 
 import (
+	"fmt"
 	"image"
 	"image/draw"
 	"math"
@@ -85,9 +86,9 @@ func ToThreshold(img *image.NRGBA, energyThreshold float32) *image.NRGBA {
 	return resultImg
 }
 
-func colourAt(img *image.NRGBA, x, y int) (r, g, b uint8) {
+func colourAt(img *image.NRGBA, x, y int) (r, g, b, a uint8) {
 	c := img.NRGBAAt(x, y)
-	return c.R, c.G, c.B
+	return c.R, c.G, c.B, c.A
 }
 
 func energy(img *image.NRGBA, x, y int) float32 {
@@ -143,6 +144,6 @@ func findMaxEnergy(energies []float32) float32 {
 	return max
 }
 
-func luminance(r, g, b uint8) float32 {
-	return 0.2126*float32(r) + 0.7152*float32(g) + 0.0722*float32(b)
+func luminance(r, g, b, a uint8) float32 {
+	return 0.2126*float32(r) + 0.7152*float32(g) + 0.0722*float32(b) + float32(a)
 }
