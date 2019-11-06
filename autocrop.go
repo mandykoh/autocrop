@@ -21,31 +21,27 @@ func BoundsForThreshold(img *image.NRGBA, energyThreshold float32) image.Rectang
 		return crop
 	}
 
-	// Calculate cumulative energies by column
-	energies := make([]float32, crop.Dx(), crop.Dx())
-	for i := crop.Min.Y; i < crop.Max.Y; i++ {
-		for j, n := crop.Min.X, 0; j < crop.Max.X; j, n = j+1, n+1 {
-			energies[n] += energy(img, j, i)
+	colEnergies := make([]float32, crop.Dx(), crop.Dx())
+	rowEnergies := make([]float32, crop.Dy(), crop.Dy())
+
+	// Calculate total column and row energies
+	for i, row := crop.Min.Y, 0; i < crop.Max.Y; i, row = i+1, row+1 {
+		for j, col := crop.Min.X, 0; j < crop.Max.X; j, col = j+1, col+1 {
+			e := energy(img, j, i)
+			colEnergies[col] += e
+			rowEnergies[row] += e
 		}
 	}
 
 	// Find left and right high energy jumps
-	maxEnergy := findMaxEnergy(energies)
-	cropLeft := findFirstEnergyBound(energies, maxEnergy, energyThreshold)
-	cropRight := findLastEnergyBound(energies, maxEnergy, energyThreshold, cropLeft)
-
-	// Calculate cumulative energies by row
-	energies = make([]float32, crop.Dy(), crop.Dy())
-	for j := crop.Min.X; j < crop.Max.X; j++ {
-		for i, n := crop.Min.Y, 0; i < crop.Max.Y; i, n = i+1, n+1 {
-			energies[n] += energy(img, j, i)
-		}
-	}
+	maxEnergy := findMaxEnergy(colEnergies)
+	cropLeft := findFirstEnergyBound(colEnergies, maxEnergy, energyThreshold)
+	cropRight := findLastEnergyBound(colEnergies, maxEnergy, energyThreshold, cropLeft)
 
 	// Find top and bottom high energy jumps
-	maxEnergy = findMaxEnergy(energies)
-	cropTop := findFirstEnergyBound(energies, maxEnergy, energyThreshold)
-	cropBottom := findLastEnergyBound(energies, maxEnergy, energyThreshold, cropTop)
+	maxEnergy = findMaxEnergy(rowEnergies)
+	cropTop := findFirstEnergyBound(rowEnergies, maxEnergy, energyThreshold)
+	cropBottom := findLastEnergyBound(rowEnergies, maxEnergy, energyThreshold, cropTop)
 
 	// Apply the crop
 	crop.Min.X += cropLeft

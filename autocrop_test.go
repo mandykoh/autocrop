@@ -10,6 +10,16 @@ import (
 	"testing"
 )
 
+func BenchmarkEnergySummation(b *testing.B) {
+	b.StopTimer()
+	img := loadTestImage("70x70-pink-square-on-clouds.png", nil)
+	b.StartTimer()
+
+	for i := 0; i < b.N; i++ {
+		BoundsForThreshold(img, 0.01)
+	}
+}
+
 func TestBoundsForThreshold(t *testing.T) {
 
 	t.Run("returns bounds for simple image with plain background cropped out", func(t *testing.T) {
@@ -153,17 +163,27 @@ func TestToThreshold(t *testing.T) {
 }
 
 func loadTestImage(fileName string, t *testing.T) *image.NRGBA {
-	t.Helper()
+	if t != nil {
+		t.Helper()
+	}
 
 	inFile, err := os.Open(path.Join("test-images", fileName))
 	if err != nil {
-		t.Fatalf("%v", err)
+		if t != nil {
+			t.Fatalf("%v", err)
+		} else {
+			return nil
+		}
 	}
 	defer inFile.Close()
 
 	img, _, err := image.Decode(inFile)
 	if err != nil {
-		t.Fatalf("%v", err)
+		if t != nil {
+			t.Fatalf("%v", err)
+		} else {
+			return nil
+		}
 	}
 
 	nrgbaImg := image.NewNRGBA(image.Rect(0, 0, img.Bounds().Dx(), img.Bounds().Dy()))
