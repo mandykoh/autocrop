@@ -85,7 +85,7 @@ func energy(img *image.NRGBA, x, y int) float32 {
 	eX := neighbours[0] + neighbours[3] + neighbours[5] - neighbours[2] - neighbours[4] - neighbours[7]
 	eY := neighbours[0] + neighbours[1] + neighbours[2] - neighbours[5] - neighbours[6] - neighbours[7]
 
-	return float32(math.Abs(float64(eX)) + math.Abs(float64(eY))*(float64(img.NRGBAAt(x, y).A)/255))
+	return float32((math.Abs(float64(eX)) + math.Abs(float64(eY))) * (float64(img.NRGBAAt(x, y).A) / 255))
 }
 
 func findFirstEnergyBound(energies []float32, maxEnergy, threshold float32) (bound int) {
