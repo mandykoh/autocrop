@@ -140,8 +140,8 @@ func TestToThreshold(t *testing.T) {
 
 		result := ToThreshold(img, 0.01)
 
-		expectedResult := image.NewNRGBA(image.Rect(0, 0, 464, 555))
-		draw.Draw(expectedResult, expectedResult.Bounds(), img, image.Pt(img.Bounds().Min.X+15, img.Bounds().Min.Y+69), draw.Src)
+		expectedResult := image.NewNRGBA(image.Rect(0, 0, 424, 550))
+		draw.Draw(expectedResult, expectedResult.Bounds(), img, image.Pt(img.Bounds().Min.X+48, img.Bounds().Min.Y+71), draw.Src)
 
 		if expected, actual := expectedResult.Bounds().Dx(), result.Bounds().Dx(); expected != actual {
 			t.Errorf("Expected cropped result to be %d pixels wide but was %d", expected, actual)
