@@ -12,15 +12,15 @@ See the [API documentation](https://godoc.org/github.com/mandykoh/autocrop) for 
 
 Some examples of cropping decisions made by `autocrop` can be seen here:
 
-_Threshold 0.01_
+_Threshold 0.1_
 
 ![Example of textured background being cropped from around a pink square](screenshots/crop-example-1.png)
 
-_Threshold 0.01_
+_Threshold 0.1_
 
 ![Example of space being cropped away around a character illustration](screenshots/crop-example-2.png)
 
-_Threshold 0.015_
+_Threshold 0.15_
 
 ![Example of sky being cropped away around a bridge](screenshots/crop-example-3.png)
 
@@ -58,4 +58,4 @@ and used to crop images like this:
 $ autocrop <input_image> <output_png> [threshold]
 ```
 
-The threshold is optional and defaults to 0.01.
+The threshold is optional and defaults to 0.1.

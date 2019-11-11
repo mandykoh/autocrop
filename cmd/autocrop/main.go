@@ -34,7 +34,7 @@ func main() {
 		os.Exit(2)
 	}
 
-	threshold := float32(0.01)
+	threshold := float32(0.1)
 	if len(os.Args) > 3 {
 		val, err := strconv.ParseFloat(os.Args[3], 32)
 		if err != nil {

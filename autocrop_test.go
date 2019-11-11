@@ -4,6 +4,7 @@ import (
 	"image"
 	"image/color"
 	"image/draw"
+	_ "image/jpeg"
 	_ "image/png"
 	"os"
 	"path"
@@ -48,7 +49,7 @@ func TestBoundsForThreshold(t *testing.T) {
 	t.Run("returns bounds for simple image with gradient background cropped out", func(t *testing.T) {
 		img := loadTestImage("70x70-pink-square-on-gradient.png", t)
 
-		result := BoundsForThreshold(img, 0.01)
+		result := BoundsForThreshold(img, 0.1)
 
 		if expected, actual := 70, result.Dx(); expected != actual {
 			t.Errorf("Expected cropped bounds to be %d pixels wide but was %d", expected, actual)
@@ -71,7 +72,7 @@ func TestBoundsForThreshold(t *testing.T) {
 	t.Run("returns bounds for simple image with textured background cropped out", func(t *testing.T) {
 		img := loadTestImage("70x70-pink-square-on-clouds.png", t)
 
-		result := BoundsForThreshold(img, 0.015)
+		result := BoundsForThreshold(img, 0.1)
 
 		if expected, actual := 70, result.Dx(); expected != actual {
 			t.Errorf("Expected cropped bounds to be %d pixels wide but was %d", expected, actual)
@@ -96,7 +97,7 @@ func TestBoundsForThreshold(t *testing.T) {
 
 		lastBounds := img.Bounds()
 
-		thresholds := []float32{0.005, 0.006, 0.007, 0.008, 0.01}
+		thresholds := []float32{0.1, 0.2, 0.3, 0.4, 0.5, 0.9}
 
 		for i := range thresholds {
 			result := BoundsForThreshold(img, thresholds[i])

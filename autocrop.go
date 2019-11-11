@@ -17,8 +17,13 @@ const bufferPixels = 1
 func BoundsForThreshold(img *image.NRGBA, energyThreshold float32) image.Rectangle {
 
 	crop := img.Bounds()
+	crop.Min.X++
+	crop.Min.Y++
+	crop.Max.X--
+	crop.Max.Y--
+
 	if crop.Empty() {
-		return crop
+		return img.Bounds()
 	}
 
 	colEnergies := make([]float32, crop.Dx(), crop.Dx())
