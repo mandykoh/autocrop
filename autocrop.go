@@ -26,17 +26,7 @@ func BoundsForThreshold(img *image.NRGBA, energyThreshold float32) image.Rectang
 		return img.Bounds()
 	}
 
-	colEnergies := make([]float32, crop.Dx(), crop.Dx())
-	rowEnergies := make([]float32, crop.Dy(), crop.Dy())
-
-	// Calculate total column and row energies
-	for i, row := crop.Min.Y, 0; i < crop.Max.Y; i, row = i+1, row+1 {
-		for j, col := crop.Min.X, 0; j < crop.Max.X; j, col = j+1, col+1 {
-			e := energy(img, j, i)
-			colEnergies[col] += e
-			rowEnergies[row] += e
-		}
-	}
+	colEnergies, rowEnergies := Energies(img, crop)
 
 	// Find left and right high energy jumps
 	maxEnergy := findMaxEnergy(colEnergies)
@@ -55,6 +45,24 @@ func BoundsForThreshold(img *image.NRGBA, energyThreshold float32) image.Rectang
 	crop.Max.Y -= cropBottom
 
 	return crop
+}
+
+// Energies returns the total row and column energies for the specified region
+// of an image.
+func Energies(img *image.NRGBA, r image.Rectangle) (cols, rows []float32) {
+	cols = make([]float32, r.Dx(), r.Dx())
+	rows = make([]float32, r.Dy(), r.Dy())
+
+	// Calculate total column and row energies
+	for i, row := r.Min.Y, 0; i < r.Max.Y; i, row = i+1, row+1 {
+		for j, col := r.Min.X, 0; j < r.Max.X; j, col = j+1, col+1 {
+			e := energy(img, j, i)
+			cols[col] += e
+			rows[row] += e
+		}
+	}
+
+	return cols, rows
 }
 
 // ToThreshold returns an image cropped using the bounds provided by
