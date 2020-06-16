@@ -2,7 +2,7 @@
 
 [![GoDoc](https://godoc.org/github.com/mandykoh/autocrop?status.svg)](https://godoc.org/github.com/mandykoh/autocrop)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mandykoh/autocrop)](https://goreportcard.com/report/github.com/mandykoh/autocrop)
-[![Build Status](https://travis-ci.org/mandykoh/autocrop.svg?branch=master)](https://travis-ci.org/mandykoh/autocrop)
+[![Build Status](https://travis-ci.org/mandykoh/autocrop.svg?branch=main)](https://travis-ci.org/mandykoh/autocrop)
 
 `autocrop` is an automatic image cropping/region-of-interest finding implementation in Go.
 
