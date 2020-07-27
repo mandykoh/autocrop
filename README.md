@@ -8,11 +8,13 @@
 
 `autocrop` uses an energy-based approach to determine regions of visual interest at which to stop cropping. Cropping is alpha channel aware and supports images with translucency.
 
+`autocrop` currently assumes image data is sRGB encoded.
+
 See the [API documentation](https://godoc.org/github.com/mandykoh/autocrop) for more details.
 
 Some examples of cropping decisions made by `autocrop` can be seen here:
 
-_Threshold 0.1_
+_Threshold 0.3_
 
 ![Example of textured background being cropped from around a pink square](screenshots/crop-example-1.png)
 

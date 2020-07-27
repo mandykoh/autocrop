@@ -1,6 +1,7 @@
 package autocrop
 
 import (
+	"github.com/mandykoh/prism/srgb"
 	"image"
 	"image/draw"
 	"math"
@@ -78,13 +79,13 @@ func ToThreshold(img *image.NRGBA, energyThreshold float32) *image.NRGBA {
 	return resultImg
 }
 
-func colourAt(img *image.NRGBA, x, y int) (r, g, b, a uint8) {
+func colourAt(img *image.NRGBA, x, y int) (r, g, b, a float64) {
 	c := img.NRGBAAt(x, y)
-	return c.R, c.G, c.B, c.A
+	return srgb.From8Bit(c.R), srgb.From8Bit(c.G), srgb.From8Bit(c.B), float64(c.A) / 255
 }
 
 func energy(img *image.NRGBA, x, y int) float32 {
-	neighbours := [8]float32{
+	neighbours := [8]float64{
 		luminance(colourAt(img, x-1, y-1)),
 		luminance(colourAt(img, x, y-1)),
 		luminance(colourAt(img, x+1, y-1)),
@@ -98,7 +99,7 @@ func energy(img *image.NRGBA, x, y int) float32 {
 	eX := neighbours[0] + neighbours[3] + neighbours[5] - neighbours[2] - neighbours[4] - neighbours[7]
 	eY := neighbours[0] + neighbours[1] + neighbours[2] - neighbours[5] - neighbours[6] - neighbours[7]
 
-	return float32((math.Abs(float64(eX)) + math.Abs(float64(eY))) * (float64(img.NRGBAAt(x, y).A) / 255))
+	return float32((math.Abs(eX) + math.Abs(eY)) * (float64(img.NRGBAAt(x, y).A) / 255))
 }
 
 func findFirstEnergyBound(energies []float32, maxEnergy, threshold float32) (bound int) {
@@ -136,6 +137,6 @@ func findMaxEnergy(energies []float32) float32 {
 	return max
 }
 
-func luminance(r, g, b, a uint8) float32 {
-	return 0.2126*float32(r) + 0.7152*float32(g) + 0.0722*float32(b) + float32(a)
+func luminance(r, g, b, a float64) float64 {
+	return srgb.LuminanceRec709(r, g, b) + a
 }

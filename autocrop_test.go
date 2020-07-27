@@ -49,7 +49,7 @@ func TestBoundsForThreshold(t *testing.T) {
 	t.Run("returns bounds for simple image with gradient background cropped out", func(t *testing.T) {
 		img := loadTestImage("70x70-pink-square-on-gradient.png", t)
 
-		result := BoundsForThreshold(img, 0.1)
+		result := BoundsForThreshold(img, 0.31)
 
 		if expected, actual := 70, result.Dx(); expected != actual {
 			t.Errorf("Expected cropped bounds to be %d pixels wide but was %d", expected, actual)
@@ -72,7 +72,7 @@ func TestBoundsForThreshold(t *testing.T) {
 	t.Run("returns bounds for simple image with textured background cropped out", func(t *testing.T) {
 		img := loadTestImage("70x70-pink-square-on-clouds.png", t)
 
-		result := BoundsForThreshold(img, 0.1)
+		result := BoundsForThreshold(img, 0.2)
 
 		if expected, actual := 70, result.Dx(); expected != actual {
 			t.Errorf("Expected cropped bounds to be %d pixels wide but was %d", expected, actual)
@@ -141,7 +141,7 @@ func TestToThreshold(t *testing.T) {
 
 		result := ToThreshold(img, 0.01)
 
-		expectedResult := image.NewNRGBA(image.Rect(0, 0, 424, 550))
+		expectedResult := image.NewNRGBA(image.Rect(0, 0, 424, 549))
 		draw.Draw(expectedResult, expectedResult.Bounds(), img, image.Pt(img.Bounds().Min.X+48, img.Bounds().Min.Y+71), draw.Src)
 
 		if expected, actual := expectedResult.Bounds().Dx(), result.Bounds().Dx(); expected != actual {
