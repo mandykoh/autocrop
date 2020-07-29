@@ -79,7 +79,7 @@ func ToThreshold(img *image.NRGBA, energyThreshold float32) *image.NRGBA {
 	return resultImg
 }
 
-func colourAt(img *image.NRGBA, x, y int) srgb.Color {
+func colourAt(img *image.NRGBA, x, y int) (col srgb.Color, alpha float32) {
 	return srgb.ColorFromNRGBA(img.NRGBAAt(x, y))
 }
 
@@ -136,6 +136,6 @@ func findMaxEnergy(energies []float32) float32 {
 	return max
 }
 
-func luminance(c srgb.Color) float32 {
-	return c.Luminance() + c.A
+func luminance(c srgb.Color, alpha float32) float32 {
+	return c.Luminance() + alpha
 }
