@@ -92,6 +92,19 @@ func TestBoundsForThreshold(t *testing.T) {
 		}
 	})
 
+	t.Run("returns bounds for entire image with zero threshold", func(t *testing.T) {
+		img := loadTestImage("70x70-pink-square-on-clouds.png", t)
+
+		result := BoundsForThreshold(img, 0.0)
+
+		if expected, actual := 512, result.Dx(); expected != actual {
+			t.Errorf("Expected cropped bounds to be %d pixels wide but was %d", expected, actual)
+		}
+		if expected, actual := 512, result.Dy(); expected != actual {
+			t.Errorf("Expected cropped bounds to be %d pixels tall but was %d", expected, actual)
+		}
+	})
+
 	t.Run("returns increasingly cropped images for higher thresholds", func(t *testing.T) {
 		img := loadTestImage("radial-gradient.png", t)
 

@@ -7,7 +7,7 @@ import (
 	"math"
 )
 
-const bufferPixels = 1
+const bufferPixels = 2
 
 // BoundsForThreshold returns the bounds for a crop of the specified image up to
 // the given energy threshold.
@@ -18,16 +18,18 @@ const bufferPixels = 1
 func BoundsForThreshold(img *image.NRGBA, energyThreshold float32) image.Rectangle {
 
 	crop := img.Bounds()
-	crop.Min.X++
-	crop.Min.Y++
-	crop.Max.X--
-	crop.Max.Y--
 
-	if crop.Empty() {
+	energyCrop := crop
+	energyCrop.Min.X++
+	energyCrop.Min.Y++
+	energyCrop.Max.X--
+	energyCrop.Max.Y--
+
+	if energyCrop.Empty() {
 		return img.Bounds()
 	}
 
-	colEnergies, rowEnergies := Energies(img, crop)
+	colEnergies, rowEnergies := Energies(img, energyCrop)
 
 	// Find left and right high energy jumps
 	maxEnergy := findMaxEnergy(colEnergies)
@@ -102,9 +104,12 @@ func energy(img *image.NRGBA, x, y int) float32 {
 }
 
 func findFirstEnergyBound(energies []float32, maxEnergy, threshold float32) (bound int) {
-	for i := 1; i < len(energies); i++ {
-		if energies[i]/maxEnergy >= threshold {
-			bound = i + bufferPixels
+	for i := 0; i < len(energies); i++ {
+		if energies[i]/maxEnergy > threshold {
+			bound = i
+			if i > 0 {
+				bound += bufferPixels
+			}
 			break
 		}
 		bound++
@@ -114,9 +119,12 @@ func findFirstEnergyBound(energies []float32, maxEnergy, threshold float32) (bou
 }
 
 func findLastEnergyBound(energies []float32, maxEnergy, threshold float32, firstBound int) (bound int) {
-	for i := len(energies) - 2; i > firstBound+bufferPixels; i-- {
-		if energies[i]/maxEnergy >= threshold {
-			bound = len(energies) - i - 1 + bufferPixels
+	for i := len(energies) - 1; i > firstBound+bufferPixels; i-- {
+		if energies[i]/maxEnergy > threshold {
+			bound = len(energies) - i - 1
+			if i < len(energies)-1 {
+				bound += bufferPixels
+			}
 			break
 		}
 		bound++
