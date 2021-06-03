@@ -53,13 +53,17 @@ func BoundsForThreshold(img *image.NRGBA, energyThreshold float32) image.Rectang
 // Energies returns the total row and column energies for the specified region
 // of an image.
 func Energies(img *image.NRGBA, r image.Rectangle) (cols, rows []float32) {
+	imageWidth := img.Rect.Dx()
+
+	luminances, alphas := luminancesAndAlphas(img)
+
 	cols = make([]float32, r.Dx(), r.Dx())
 	rows = make([]float32, r.Dy(), r.Dy())
 
 	// Calculate total column and row energies
 	for i, row := r.Min.Y, 0; i < r.Max.Y; i, row = i+1, row+1 {
 		for j, col := r.Min.X, 0; j < r.Max.X; j, col = j+1, col+1 {
-			e := energy(img, j, i)
+			e := energy(imageWidth, luminances, alphas, j, i)
 			cols[col] += e
 			rows[row] += e
 		}
@@ -85,22 +89,16 @@ func colourAt(img *image.NRGBA, x, y int) (col srgb.Color, alpha float32) {
 	return srgb.ColorFromNRGBA(img.NRGBAAt(x, y))
 }
 
-func energy(img *image.NRGBA, x, y int) float32 {
-	neighbours := [8]float32{
-		luminance(colourAt(img, x-1, y-1)),
-		luminance(colourAt(img, x, y-1)),
-		luminance(colourAt(img, x+1, y-1)),
-		luminance(colourAt(img, x-1, y)),
-		luminance(colourAt(img, x+1, y)),
-		luminance(colourAt(img, x-1, y+1)),
-		luminance(colourAt(img, x, y+1)),
-		luminance(colourAt(img, x+1, y+1)),
-	}
+func energy(width int, luminances, alphas []float32, x, y int) float32 {
+	center := y*width + x
 
-	eX := neighbours[0] + neighbours[3] + neighbours[5] - neighbours[2] - neighbours[4] - neighbours[7]
-	eY := neighbours[0] + neighbours[1] + neighbours[2] - neighbours[5] - neighbours[6] - neighbours[7]
+	// North west + west + south west - north east - east - south east
+	eX := luminances[center-width-1] + luminances[center-1] + luminances[center+width-1] - luminances[center-width+1] - luminances[center+1] - luminances[center+width+1]
 
-	return float32((math.Abs(float64(eX)) + math.Abs(float64(eY))) * (float64(img.NRGBAAt(x, y).A) / 255))
+	// North west + north + north east - south west - south - south east
+	eY := luminances[center-width-1] + luminances[center-width] + luminances[center-width+1] - luminances[center+width-1] - luminances[center+width] - luminances[center+width+1]
+
+	return float32((math.Abs(float64(eX)) + math.Abs(float64(eY))) * float64(alphas[center]))
 }
 
 func findFirstEnergyBound(energies []float32, maxEnergy, threshold float32) (bound int) {
@@ -146,4 +144,23 @@ func findMaxEnergy(energies []float32) float32 {
 
 func luminance(c srgb.Color, alpha float32) float32 {
 	return c.Luminance() + alpha
+}
+
+func luminancesAndAlphas(img *image.NRGBA) (luminances, alphas []float32) {
+	luminances = make([]float32, img.Rect.Dx()*img.Rect.Dy(), img.Rect.Dx()*img.Rect.Dy())
+	alphas = make([]float32, img.Rect.Dx()*img.Rect.Dy(), img.Rect.Dx()*img.Rect.Dy())
+
+	offset := 0
+
+	// Get the luminances and alphas for all pixels
+	for i, row := img.Rect.Min.Y, 0; i < img.Rect.Max.Y; i, row = i+1, row+1 {
+		for j, col := img.Rect.Min.X, 0; j < img.Rect.Max.X; j, col = j+1, col+1 {
+			c, a := colourAt(img, col, row)
+			luminances[offset] = luminance(c, a)
+			alphas[offset] = a
+			offset++
+		}
+	}
+
+	return luminances, alphas
 }
