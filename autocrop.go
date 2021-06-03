@@ -53,9 +53,7 @@ func BoundsForThreshold(img *image.NRGBA, energyThreshold float32) image.Rectang
 // Energies returns the total row and column energies for the specified region
 // of an image.
 func Energies(img *image.NRGBA, r image.Rectangle) (cols, rows []float32) {
-	imageWidth := img.Rect.Dx()
-
-	luminances, alphas := luminancesAndAlphas(img)
+	width, luminances, alphas := luminancesAndAlphas(img, r)
 
 	cols = make([]float32, r.Dx(), r.Dx())
 	rows = make([]float32, r.Dy(), r.Dy())
@@ -63,7 +61,7 @@ func Energies(img *image.NRGBA, r image.Rectangle) (cols, rows []float32) {
 	// Calculate total column and row energies
 	for i, row := r.Min.Y, 0; i < r.Max.Y; i, row = i+1, row+1 {
 		for j, col := r.Min.X, 0; j < r.Max.X; j, col = j+1, col+1 {
-			e := energy(imageWidth, luminances, alphas, j, i)
+			e := energy(width, luminances, alphas, j, i)
 			cols[col] += e
 			rows[row] += e
 		}
@@ -146,15 +144,20 @@ func luminance(c srgb.Color, alpha float32) float32 {
 	return c.Luminance() + alpha
 }
 
-func luminancesAndAlphas(img *image.NRGBA) (luminances, alphas []float32) {
-	luminances = make([]float32, img.Rect.Dx()*img.Rect.Dy(), img.Rect.Dx()*img.Rect.Dy())
-	alphas = make([]float32, img.Rect.Dx()*img.Rect.Dy(), img.Rect.Dx()*img.Rect.Dy())
+func luminancesAndAlphas(img *image.NRGBA, r image.Rectangle) (width int, luminances, alphas []float32) {
+
+	// Need a 1 pixel border of luminances around the region specified by r
+	rWidth := r.Dx() + 2
+	rHeight := r.Dy() + 2
+
+	luminances = make([]float32, rWidth*rHeight, rWidth*rHeight)
+	alphas = make([]float32, rWidth*rHeight, rWidth*rHeight)
 
 	offset := 0
 
 	// Get the luminances and alphas for all pixels
-	for i, row := img.Rect.Min.Y, 0; i < img.Rect.Max.Y; i, row = i+1, row+1 {
-		for j, col := img.Rect.Min.X, 0; j < img.Rect.Max.X; j, col = j+1, col+1 {
+	for i, row := r.Min.Y-1, 0; i <= r.Max.Y; i, row = i+1, row+1 {
+		for j, col := r.Min.X-1, 0; j <= r.Max.X; j, col = j+1, col+1 {
 			c, a := colourAt(img, col, row)
 			luminances[offset] = luminance(c, a)
 			alphas[offset] = a
@@ -162,5 +165,5 @@ func luminancesAndAlphas(img *image.NRGBA) (luminances, alphas []float32) {
 		}
 	}
 
-	return luminances, alphas
+	return rWidth, luminances, alphas
 }
